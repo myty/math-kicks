@@ -1,13 +1,13 @@
 import React, { ChangeEvent, useRef } from "react";
-import inputStyles from "./input.css";
 
 interface InputProps {
     id: string;
     label: string;
     onChange: (value: string) => void;
+    type?: string;
 }
 
-const Input: React.FC<InputProps> = ({ id, label, onChange }) => {
+const Input: React.FC<InputProps> = ({ id, label, onChange, type = "text" }) => {
     const inputRef = useRef<HTMLInputElement>(null);
 
     const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
@@ -15,13 +15,14 @@ const Input: React.FC<InputProps> = ({ id, label, onChange }) => {
     };
 
     return (
-        <label htmlFor={id} className={inputStyles.label}>
+        <label htmlFor={id}>
             {label}
             <input
-                className={inputStyles.input}
+                className="p-1 mx-1 border-gray-300 rounded border-1"
                 ref={inputRef}
                 id={id}
                 onChange={handleChange}
+                type={type}
             />
         </label>
     );

@@ -1,7 +1,4 @@
-import "./App.css";
-
 import React, { useCallback, useEffect, useState } from "react";
-import { atoms } from "./atoms.css";
 import Input from "./components/input/input";
 
 type MathFact = { num1: number; num2: number };
@@ -58,17 +55,21 @@ const App: React.FC = () => {
     }, []);
 
     return (
-        <div className={atoms({ padding: "1x" })}>
-            <h1>Math Facts</h1>
+        <div>
+            <h1 className="text-lg font-semibold text-center">Math Facts</h1>
 
-            <Input id="min" label="Min" onChange={handleMinChange} />
-            <Input id="max" label="Max" onChange={handleMaxChange} />
+            <div className="m-3 text-center">
+                <Input id="min" label="Min" onChange={handleMinChange} />
+                <Input id="max" label="Max" onChange={handleMaxChange} />
+                <button onClick={generate}>Refresh</button>
+            </div>
 
-            <button onClick={generate}>Refresh</button>
-            <ul className={atoms({ display: "flex" })}>
+            <ul className="flex flex-wrap">
                 {mathFacts.map((mf, i) => {
                     return (
-                        <li key={i} className={atoms({ flexDirection: "row" })}>
+                        <li
+                            key={i}
+                            className="inline-block w-8 m-12 text-right border-b-2 border-gray-800">
                             <div>{mf.num1}</div>
                             <div>x {mf.num2}</div>
                         </li>
