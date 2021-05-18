@@ -4,10 +4,7 @@ import Input from "./components/input/input";
 type MathFact = { num1: number; num2: number };
 
 const App: React.FC = () => {
-    const [[min, max], setMinMax] = useState<[number | undefined, number | undefined]>([
-        undefined,
-        undefined,
-    ]);
+    const [[min, max], setMinMax] = useState<[number, number]>([0, 12]);
 
     const [mathFacts, setMathFacts] = useState<Array<MathFact>>([]);
 
@@ -42,7 +39,7 @@ const App: React.FC = () => {
             return;
         }
 
-        setMinMax(([min, max]) => [newMin < (max ?? 12) ? newMin : min, max]);
+        setMinMax(([, max]) => [newMin, newMin < (max ?? 0) - 3 ? max : newMin + 3]);
     }, []);
 
     const handleMaxChange = useCallback((value: string) => {
@@ -51,7 +48,7 @@ const App: React.FC = () => {
             return;
         }
 
-        setMinMax(([min, max]) => [min, (min ?? 0) < newMax ? newMax : max]);
+        setMinMax(([min]) => [(min ?? 0) + 3 < newMax ? min : newMax - 3, newMax]);
     }, []);
 
     return (
@@ -59,8 +56,25 @@ const App: React.FC = () => {
             <h1 className="text-lg font-semibold text-center">Math Facts</h1>
 
             <div className="m-3 text-center">
-                <Input id="min" label="Min" onChange={handleMinChange} />
-                <Input id="max" label="Max" onChange={handleMaxChange} />
+                <Input
+                    id="min"
+                    label="Min"
+                    onChange={handleMinChange}
+                    type="number"
+                    min={0}
+                    max={9}
+                    value={min}
+                />
+
+                <Input
+                    id="max"
+                    label="Max"
+                    onChange={handleMaxChange}
+                    type="number"
+                    min={3}
+                    max={12}
+                    value={max}
+                />
                 <button onClick={generate}>Refresh</button>
             </div>
 

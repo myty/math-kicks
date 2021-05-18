@@ -1,14 +1,35 @@
-import React, { ChangeEvent, useRef } from "react";
+import React, { ChangeEvent, useEffect, useRef, useState } from "react";
 
-interface InputProps {
+type InputType =
+    | { type: "number"; min: number; max: number; value: number }
+    | { type: "text"; value?: string };
+
+type InputProps = {
     id: string;
     label: string;
     onChange: (value: string) => void;
-    type?: string;
-}
+};
 
-const Input: React.FC<InputProps> = ({ id, label, onChange, type = "text" }) => {
+const Input: React.FC<InputType & InputProps> = ({
+    id,
+    label,
+    onChange,
+    type,
+    value: propValue,
+    ...rest
+}) => {
     const inputRef = useRef<HTMLInputElement>(null);
+    const [value, setValue] = useState(propValue);
+
+    useEffect(() => {
+        setValue((prev) => {
+            if (prev === propValue) {
+                return prev;
+            }
+
+            return propValue;
+        });
+    }, [propValue]);
 
     const handleChange = (evt: ChangeEvent<HTMLInputElement>) => {
         onChange(evt.target.value);
@@ -23,6 +44,8 @@ const Input: React.FC<InputProps> = ({ id, label, onChange, type = "text" }) => 
                 id={id}
                 onChange={handleChange}
                 type={type}
+                value={value}
+                {...rest}
             />
         </label>
     );
