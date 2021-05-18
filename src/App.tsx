@@ -1,5 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import Input from "./components/input/input";
+import MathFactList from "./components/math-fact-list/math-fact-list";
+import MathFact from "./components/math-fact/math-fact";
 
 type MathFact = { num1: number; num2: number };
 
@@ -19,7 +21,7 @@ const App: React.FC = () => {
         }
 
         const mathFacts: Array<MathFact> = [];
-        for (let index = 0; index < 100; index++) {
+        for (let index = 0; index < 64; index++) {
             mathFacts.push({
                 num1: getNextRandomNumber(min, max),
                 num2: getNextRandomNumber(min, max),
@@ -57,6 +59,7 @@ const App: React.FC = () => {
 
             <div className="m-3 text-center">
                 <Input
+                    className="mr-4"
                     id="min"
                     label="Min"
                     onChange={handleMinChange}
@@ -67,6 +70,7 @@ const App: React.FC = () => {
                 />
 
                 <Input
+                    className="mr-4"
                     id="max"
                     label="Max"
                     onChange={handleMaxChange}
@@ -75,21 +79,19 @@ const App: React.FC = () => {
                     max={12}
                     value={max}
                 />
-                <button onClick={generate}>Refresh</button>
+
+                <button
+                    className="px-2 py-1 mx-2 text-white bg-blue-500 rounded-sm"
+                    onClick={generate}>
+                    Refresh
+                </button>
             </div>
 
-            <ul className="flex flex-wrap">
+            <MathFactList>
                 {mathFacts.map((mf, i) => {
-                    return (
-                        <li
-                            key={i}
-                            className="inline-block w-8 m-12 text-right border-b-2 border-gray-800">
-                            <div>{mf.num1}</div>
-                            <div>x {mf.num2}</div>
-                        </li>
-                    );
+                    return <MathFact key={i} number1={mf.num1} number2={mf.num2} />;
                 })}
-            </ul>
+            </MathFactList>
         </div>
     );
 };

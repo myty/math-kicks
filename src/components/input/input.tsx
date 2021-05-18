@@ -4,13 +4,15 @@ type InputType =
     | { type: "number"; min: number; max: number; value: number }
     | { type: "text"; value?: string };
 
-type InputProps = {
+type InputProps = InputType & {
+    className?: string;
     id: string;
     label: string;
     onChange: (value: string) => void;
 };
 
-const Input: React.FC<InputType & InputProps> = ({
+const Input: React.FC<InputProps> = ({
+    className,
     id,
     label,
     onChange,
@@ -36,7 +38,7 @@ const Input: React.FC<InputType & InputProps> = ({
     };
 
     return (
-        <label htmlFor={id}>
+        <label className={className} htmlFor={id}>
             {label}
             <input
                 className="p-1 mx-1 border-gray-300 rounded border-1"
