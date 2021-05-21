@@ -18,6 +18,7 @@ specifiers:
   eslint-plugin-jsx-a11y: ^6.4.1
   eslint-plugin-prettier: ^3.4.0
   eslint-plugin-react: ^7.23.2
+  jotai: ^0.16.5
   postcss: ^8.2.15
   pre-commit: ^1.2.2
   prettier: ^2.3.0
@@ -29,6 +30,7 @@ specifiers:
   vite-plugin-fonts: ^0.2.2
 
 dependencies:
+  jotai: 0.16.5_react@17.0.2
   react: 17.0.2
   react-dom: 17.0.2_react@17.0.2
 
@@ -1637,6 +1639,31 @@ packages:
   /isexe/2.0.0:
     resolution: {integrity: sha1-6PvzdNxVb/iUehDcsFctYz8s+hA=}
     dev: true
+
+  /jotai/0.16.5_react@17.0.2:
+    resolution: {integrity: sha512-exiddLOPp22P0c7z+X5jQEraoEdFm80BaNeuT2WTMAFNRZY2l1XmefR/PXj9JEaAMrHRQk7BKbJ51C5AddoSWA==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      immer: '*'
+      optics-ts: '*'
+      react: '>=16.8'
+      react-query: '*'
+      valtio: '*'
+      xstate: '*'
+    peerDependenciesMeta:
+      immer:
+        optional: true
+      optics-ts:
+        optional: true
+      react-query:
+        optional: true
+      valtio:
+        optional: true
+      xstate:
+        optional: true
+    dependencies:
+      react: 17.0.2
+    dev: false
 
   /js-tokens/4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}

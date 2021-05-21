@@ -1,56 +1,101 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useReducer } from "react";
 import Input from "./components/input/input";
 import MathFactList from "./components/math-fact-list/math-fact-list";
 import MathFact from "./components/math-fact/math-fact";
 
 type MathFact = { num1: number; num2: number };
 
+interface AppState {
+    min: number;
+    max: number;
+    mathFacts: Array<MathFact>;
+}
+
+type AppAction =
+    | { type: "minChange"; min: number }
+    | { type: "maxChange"; max: number }
+    | { type: "randomize" };
+
+const getRandomFacts = (min: number, max: number, count: number) => {
+    const mathFacts: Array<MathFact> = [];
+    const getNextRandomNumber = () => min + Math.round(Math.random() * (max - min));
+
+    for (let index = 0; index < count; index++) {
+        mathFacts.push({
+            num1: getNextRandomNumber(),
+            num2: getNextRandomNumber(),
+        });
+    }
+
+    return mathFacts;
+};
+
+const defaultAppState: AppState = {
+    min: 0,
+    max: 12,
+    mathFacts: getRandomFacts(0, 12, 80),
+};
+
+const appReducer = (state: AppState, action: AppAction): AppState => {
+    switch (action.type) {
+        case "randomize": {
+            const { min, max } = state;
+
+            return {
+                ...state,
+                mathFacts: getRandomFacts(min, max, 80),
+            };
+        }
+        case "minChange": {
+            const { min } = action;
+
+            if (isNaN(min) || min < 0) {
+                return state;
+            }
+
+            const max = min < (state.max ?? 0) - 3 ? state.max : min + 3;
+
+            return {
+                ...state,
+                min,
+                max,
+                mathFacts: getRandomFacts(min, max, 80),
+            };
+        }
+        case "maxChange": {
+            const { max } = action;
+
+            if (isNaN(max) || max > 12 || max < 3) {
+                return state;
+            }
+
+            const min = (state.min ?? 0) + 3 < max ? state.min : max - 3;
+
+            return {
+                ...state,
+                max,
+                min,
+                mathFacts: getRandomFacts(min, max, 80),
+            };
+        }
+    }
+};
+
 const App: React.FC = () => {
-    const [[min, max], setMinMax] = useState<[number, number]>([0, 12]);
-
-    const [mathFacts, setMathFacts] = useState<Array<MathFact>>([]);
-
-    const getNextRandomNumber = useCallback((min: number, max: number) => {
-        return min + Math.round(Math.random() * (max - min));
-    }, []);
+    const [{ min, max, mathFacts }, dispatch] = useReducer(appReducer, defaultAppState);
 
     const generate = useCallback(() => {
-        if (min == null || max == null) {
-            setMathFacts([]);
-            return;
-        }
-
-        const mathFacts: Array<MathFact> = [];
-        for (let index = 0; index < 64; index++) {
-            mathFacts.push({
-                num1: getNextRandomNumber(min, max),
-                num2: getNextRandomNumber(min, max),
-            });
-        }
-
-        setMathFacts(mathFacts);
-    }, [getNextRandomNumber, min, max]);
-
-    useEffect(() => {
-        generate();
-    }, [generate]);
+        dispatch({ type: "randomize" });
+    }, []);
 
     const handleMinChange = useCallback((value: string) => {
-        const newMin = parseInt(value);
-        if (isNaN(newMin) || newMin < 0) {
-            return;
-        }
-
-        setMinMax(([, max]) => [newMin, newMin < (max ?? 0) - 3 ? max : newMin + 3]);
+        const min = parseInt(value);
+        dispatch({ type: "minChange", min });
     }, []);
 
     const handleMaxChange = useCallback((value: string) => {
-        const newMax = parseInt(value);
-        if (isNaN(newMax) || newMax > 12) {
-            return;
-        }
-
-        setMinMax(([min]) => [(min ?? 0) + 3 < newMax ? min : newMax - 3, newMax]);
+        const max = parseInt(value);
+        dispatch({ type: "maxChange", max });
     }, []);
 
     return (
@@ -88,9 +133,9 @@ const App: React.FC = () => {
             </div>
 
             <MathFactList>
-                {mathFacts.map((mf, i) => {
-                    return <MathFact key={i} number1={mf.num1} number2={mf.num2} />;
-                })}
+                {mathFacts.map((mf, i) => (
+                    <MathFact key={i} number1={mf.num1} number2={mf.num2} />
+                ))}
             </MathFactList>
         </div>
     );
