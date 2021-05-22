@@ -2,6 +2,7 @@
     "liveFrame.url": "http://localhost:3000",
     "liveFrame.title": "Local Development",
     "liveFrame.pane": "Beside",
+    "eslint.packageManager": "pnpm",
     "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact"],
     // prettier extension setting
     "editor.formatOnSave": true,

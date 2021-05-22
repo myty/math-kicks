@@ -5,7 +5,7 @@ export const reducerLogger = <TState, TAction>(
     return (incomingState: TState, action: TAction) => {
         const outgoingState = reducer(incomingState, action);
 
-        console.log(`<- ${label} state changed ->`, {
+        console.log(`<- ${label} - state change ->`, {
             action,
             incomingState,
             outgoingState,
