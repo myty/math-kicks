@@ -1,5 +1,6 @@
 import useMathSheet from "hooks/use-math-sheet";
 import { act, renderHook } from "@testing-library/react-hooks";
+import Faker from "faker";
 
 describe("useMathSheet()", () => {
     describe("when initialized", () => {
@@ -34,9 +35,24 @@ describe("useMathSheet()", () => {
         it("returns the hook unchanged", () => {
             //Arrange
             const { result } = renderHook(() => useMathSheet());
+            const changedValue = Faker.datatype.number({ max: -1 }).toString();
 
             // Act
-            act(() => result.current.changeMinimum("-1"));
+            act(() => result.current.changeMinimum(changedValue));
+
+            // Assert
+            expect(result.all[1]).toBe(result.all[2]);
+        });
+    });
+
+    describe("when changeMinimum value is > 9", () => {
+        it("returns the hook unchanged", () => {
+            //Arrange
+            const { result } = renderHook(() => useMathSheet());
+            const changedValue = Faker.datatype.number({ min: 10 }).toString();
+
+            // Act
+            act(() => result.current.changeMinimum(changedValue));
 
             // Assert
             expect(result.all[1]).toBe(result.all[2]);
@@ -47,9 +63,116 @@ describe("useMathSheet()", () => {
         it("returns the hook unchanged", () => {
             //Arrange
             const { result } = renderHook(() => useMathSheet());
+            const changedValue = Faker.random.word().slice(0, 1);
 
             // Act
-            act(() => result.current.changeMinimum("a"));
+            act(() => result.current.changeMinimum(changedValue));
+
+            // Assert
+            expect(result.all[1]).toBe(result.all[2]);
+        });
+    });
+
+    describe.each([undefined, null, ""])(
+        "when changeMinimum value is %s",
+        (changedValue) => {
+            it("returns the hook unchanged", () => {
+                // Arrange
+                const { result } = renderHook(() => useMathSheet());
+
+                // Act
+                act(() => result.current.changeMinimum(changedValue));
+
+                // Assert
+                expect(result.all[1]).toBe(result.all[2]);
+            });
+        },
+    );
+
+    describe.each([undefined, null, ""])(
+        "when changeMaximum value is %s",
+        (changedValue) => {
+            it("returns the hook unchanged", () => {
+                //Arrange
+                const { result } = renderHook(() => useMathSheet());
+
+                // Act
+                act(() => result.current.changeMaximum(changedValue));
+
+                // Assert
+                expect(result.all[1]).toBe(result.all[2]);
+            });
+        },
+    );
+
+    describe("when changeMinimum value is 2 less than max value", () => {
+        it("returns minimum and maximum values changed", () => {
+            //Arrange
+            const { result } = renderHook(() => useMathSheet());
+            const maximumValue = Faker.datatype.number({ min: 3, max: 11 });
+            const changedValue = maximumValue - 2;
+
+            // Act
+            act(() => result.current.changeMaximum(maximumValue.toString()));
+            act(() => result.current.changeMinimum(changedValue.toString()));
+
+            // Assert
+            expect(result.current.max).toBe(changedValue + 3);
+        });
+    });
+
+    describe("when changeMaximum value is 2 greater than min value", () => {
+        it("returns minimum and maximum values changed", () => {
+            //Arrange
+            const { result } = renderHook(() => useMathSheet());
+            const expectedMinimumValue = Faker.datatype.number({ min: 1, max: 9 });
+            const maximumValue = expectedMinimumValue + 2;
+
+            // Act
+            act(() => result.current.changeMinimum(expectedMinimumValue.toString()));
+            act(() => result.current.changeMaximum(maximumValue.toString()));
+
+            // Assert
+            expect(result.current.min).toBe(maximumValue - 3);
+        });
+    });
+
+    describe("when changeMaximum value is > 12", () => {
+        it("returns the hook unchanged", () => {
+            //Arrange
+            const { result } = renderHook(() => useMathSheet());
+            const changedValue = Faker.datatype.number({ min: 13 }).toString();
+
+            // Act
+            act(() => result.current.changeMaximum(changedValue));
+
+            // Assert
+            expect(result.all[1]).toBe(result.all[2]);
+        });
+    });
+
+    describe("when changeMaximum value is < 3", () => {
+        it("returns the hook unchanged", () => {
+            //Arrange
+            const { result } = renderHook(() => useMathSheet());
+            const changedValue = Faker.datatype.number({ max: 2 }).toString();
+
+            // Act
+            act(() => result.current.changeMaximum(changedValue));
+
+            // Assert
+            expect(result.all[1]).toBe(result.all[2]);
+        });
+    });
+
+    describe("when changeMaximum value is a letter", () => {
+        it("returns the hook unchanged", () => {
+            //Arrange
+            const { result } = renderHook(() => useMathSheet());
+            const changedValue = Faker.random.word().slice(0, 1);
+
+            // Act
+            act(() => result.current.changeMaximum(changedValue));
 
             // Assert
             expect(result.all[1]).toBe(result.all[2]);

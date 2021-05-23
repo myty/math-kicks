@@ -12,7 +12,8 @@
         "coverage": "jest --coverage",
         "coverage-report": "jest --coverage && codecov --disable=gcov",
         "test": "jest",
-        "watch:test": "jest --watch"
+        "watch:test": "jest --watch",
+        "watch:coverage": "jest --coverage --watch"
     },
     "dependencies": {
         "jotai": "^0.16.5",

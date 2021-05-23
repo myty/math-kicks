@@ -5,8 +5,8 @@ interface MathSheetHookOptions {
 }
 
 interface MathSheetHookResult {
-    changeMaximum: (value: string) => void;
-    changeMinimum: (value: string) => void;
+    changeMaximum: (value?: string | null) => void;
+    changeMinimum: (value?: string | null) => void;
     generate: () => void;
     min: number;
     max: number;
@@ -52,6 +52,22 @@ const defaultAppState = (totalCount: number): MathSheetHookState => {
     };
 };
 
+const calculateNextMinimum = (nextMax: number, currentMin: number) => {
+    if (currentMin + 3 < nextMax) {
+        return currentMin;
+    }
+
+    return nextMax - 3;
+};
+
+const calculateMaxValue = (nextMin: number, currentMax: number) => {
+    if (nextMin < currentMax - 3) {
+        return currentMax;
+    }
+
+    return nextMin + 3;
+};
+
 const appReducer = (
     state: MathSheetHookState,
     action: MathSheetHookAction,
@@ -68,11 +84,11 @@ const appReducer = (
         case "minChange": {
             const { min } = action;
 
-            if (isNaN(min) || min < 0) {
+            if (isNaN(min) || min < 0 || min > 9) {
                 return state;
             }
 
-            const max = min < (state.max ?? 0) - 3 ? state.max : min + 3;
+            const max = calculateMaxValue(min, state.max);
 
             return {
                 ...state,
@@ -88,7 +104,7 @@ const appReducer = (
                 return state;
             }
 
-            const min = (state.min ?? 0) + 3 < max ? state.min : max - 3;
+            const min = calculateNextMinimum(max, state.min);
 
             return {
                 ...state,
@@ -114,13 +130,13 @@ export default function useMathSheet(
         dispatch({ type: "randomize" });
     }, []);
 
-    const changeMinimum = useCallback((value: string) => {
-        const min = parseInt(value);
+    const changeMinimum = useCallback((value?: string | null) => {
+        const min = value == null ? NaN : parseInt(value);
         dispatch({ type: "minChange", min });
     }, []);
 
-    const changeMaximum = useCallback((value: string) => {
-        const max = parseInt(value);
+    const changeMaximum = useCallback((value?: string | null) => {
+        const max = value == null ? NaN : parseInt(value);
         dispatch({ type: "maxChange", max });
     }, []);
 
