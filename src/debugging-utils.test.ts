@@ -1,4 +1,4 @@
-import { reducerLogger } from "./debugging-utils";
+import { reducerLogger } from "debugging-utils";
 
 describe("reduceLogger", () => {
     describe("when called", () => {
