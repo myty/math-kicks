@@ -1,4 +1,6 @@
+import { MathSymbol } from "enums/math-symbol";
 import { useCallback, useReducer } from "react";
+import { NumberGenerationUtils } from "utils/number-generation-utils";
 
 interface MathSheetHookOptions {
     totalCount?: number;
@@ -7,48 +9,58 @@ interface MathSheetHookOptions {
 interface MathSheetHookResult {
     changeMaximum: (value?: string | null) => void;
     changeMinimum: (value?: string | null) => void;
+    changeSymbol: (value?: string | null) => void;
     generate: () => void;
     min: number;
     max: number;
-    mathFacts: Array<MathFact>;
+    mathProblems: Array<MathProblem>;
+    symbol: MathSymbol;
 }
 
-type MathFact = { num1: number; num2: number };
+export type MathProblem = { num1: number; num2: number };
 
 interface MathSheetHookState {
-    getRandomFacts: (min: number, max: number) => Array<MathFact>;
+    generateMathProblems: (
+        min: number,
+        max: number,
+        symbol: MathSymbol,
+    ) => Array<MathProblem>;
     min: number;
     max: number;
-    mathFacts: Array<MathFact>;
+    mathProblems: Array<MathProblem>;
+    symbol: MathSymbol;
 }
 
 type MathSheetHookAction =
     | { type: "minChange"; min: number }
     | { type: "maxChange"; max: number }
+    | { type: "symbolChange"; value: string | null | undefined }
     | { type: "randomize" };
 
-const buildRandomFactFunc = (count: number) => (min: number, max: number) => {
-    const mathFacts: Array<MathFact> = [];
-    const getNextRandomNumber = () => min + Math.round(Math.random() * (max - min));
-
-    for (let index = 0; index < count; index++) {
-        mathFacts.push({
-            num1: getNextRandomNumber(),
-            num2: getNextRandomNumber(),
+const buildRandomFactFunc =
+    (count: number) =>
+    (min: number, max: number, symbol: MathSymbol = MathSymbol.Multiplication) => {
+        return NumberGenerationUtils.generateMathProblems({
+            symbol,
+            count,
+            min,
+            max,
         });
-    }
-
-    return mathFacts;
-};
+    };
 
 const defaultAppState = (totalCount: number): MathSheetHookState => {
-    const getRandomFacts = buildRandomFactFunc(totalCount);
+    const generateMathProblems = buildRandomFactFunc(totalCount);
 
-    return {
-        getRandomFacts,
+    const defaults = {
         min: 0,
         max: 12,
-        mathFacts: getRandomFacts(0, 12),
+        symbol: MathSymbol.Multiplication,
+    };
+
+    return {
+        ...defaults,
+        generateMathProblems,
+        mathProblems: generateMathProblems(0, 12),
     };
 };
 
@@ -74,11 +86,11 @@ const appReducer = (
 ): MathSheetHookState => {
     switch (action.type) {
         case "randomize": {
-            const { min, max } = state;
+            const { min, max, symbol } = state;
 
             return {
                 ...state,
-                mathFacts: state.getRandomFacts(min, max),
+                mathProblems: state.generateMathProblems(min, max, symbol),
             };
         }
         case "minChange": {
@@ -94,7 +106,7 @@ const appReducer = (
                 ...state,
                 min,
                 max,
-                mathFacts: state.getRandomFacts(min, max),
+                mathProblems: state.generateMathProblems(min, max, state.symbol),
             };
         }
         case "maxChange": {
@@ -110,18 +122,39 @@ const appReducer = (
                 ...state,
                 max,
                 min,
-                mathFacts: state.getRandomFacts(min, max),
+                mathProblems: state.generateMathProblems(min, max, state.symbol),
+            };
+        }
+        case "symbolChange": {
+            const { value } = action;
+
+            if (!isMathSymbol(value)) {
+                return state;
+            }
+
+            return {
+                ...state,
+                symbol: value,
+                mathProblems: state.generateMathProblems(state.min, state.max, value),
             };
         }
     }
 };
+
+function isMathSymbol(value?: string | null): value is MathSymbol {
+    return (
+        value === MathSymbol.Addition ||
+        value === MathSymbol.Subtraction ||
+        value === MathSymbol.Multiplication
+    );
+}
 
 export default function useMathSheet(
     options?: MathSheetHookOptions,
 ): MathSheetHookResult {
     const { totalCount = 80 } = options ?? {};
 
-    const [{ min, max, mathFacts }, dispatch] = useReducer(
+    const [{ min, max, mathProblems, symbol }, dispatch] = useReducer(
         appReducer,
         defaultAppState(totalCount),
     );
@@ -140,12 +173,18 @@ export default function useMathSheet(
         dispatch({ type: "maxChange", max });
     }, []);
 
+    const changeSymbol = useCallback((value?: string | null) => {
+        dispatch({ type: "symbolChange", value });
+    }, []);
+
     return {
         changeMaximum,
         changeMinimum,
+        changeSymbol,
         generate,
         min,
         max,
-        mathFacts,
+        mathProblems,
+        symbol,
     };
 }

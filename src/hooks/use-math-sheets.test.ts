@@ -14,7 +14,7 @@ describe("useMathSheet()", () => {
             // Assert
             expect(result.current.min).toBe(0);
             expect(result.current.max).toBe(12);
-            expect(result.current.mathFacts).toHaveLength(totalCount);
+            expect(result.current.mathProblems).toHaveLength(totalCount);
         });
     });
 
