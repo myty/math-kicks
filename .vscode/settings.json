@@ -19,5 +19,6 @@
         "editor.defaultFormatter": "esbenp.prettier-vscode"
     },
     "prettier.configPath": ".prettierrc.js",
-    "vite.autoStart": false
+    "vite.autoStart": false,
+    "typescript.tsdk": "node_modules\\typescript\\lib"
 }

@@ -1,6 +1,7 @@
 import useMathSheet from "hooks/use-math-sheet";
 import { act, renderHook } from "@testing-library/react-hooks";
 import Faker from "faker";
+import { MathSymbol } from "enums/math-symbol";
 
 describe("useMathSheet()", () => {
     describe("when initialized", () => {
@@ -15,6 +16,25 @@ describe("useMathSheet()", () => {
             expect(result.current.min).toBe(0);
             expect(result.current.max).toBe(12);
             expect(result.current.mathProblems).toHaveLength(totalCount);
+        });
+    });
+
+    describe("when totalCount props change", () => {
+        it("returns new results", () => {
+            //Arrange
+            const originalTotalCount = 80;
+            const nextTotalCount = 100;
+            const { result, rerender } = renderHook((props) => useMathSheet(props), {
+                initialProps: { totalCount: originalTotalCount },
+            });
+            const { mathProblems: originalMathProblems } = result.current;
+
+            // Act
+            rerender({ totalCount: nextTotalCount });
+
+            // Assert
+            expect(result.current.mathProblems).toHaveLength(nextTotalCount);
+            expect(originalMathProblems).not.toEqual(result.current.mathProblems);
         });
     });
 
@@ -41,7 +61,7 @@ describe("useMathSheet()", () => {
             act(() => result.current.changeMinimum(changedValue));
 
             // Assert
-            expect(result.all[1]).toBe(result.all[2]);
+            expect(result.all[1]).toStrictEqual(result.all[2]);
         });
     });
 
@@ -55,7 +75,7 @@ describe("useMathSheet()", () => {
             act(() => result.current.changeMinimum(changedValue));
 
             // Assert
-            expect(result.all[1]).toBe(result.all[2]);
+            expect(result.all[1]).toStrictEqual(result.all[2]);
         });
     });
 
@@ -69,7 +89,7 @@ describe("useMathSheet()", () => {
             act(() => result.current.changeMinimum(changedValue));
 
             // Assert
-            expect(result.all[1]).toBe(result.all[2]);
+            expect(result.all[1]).toStrictEqual(result.all[2]);
         });
     });
 
@@ -84,7 +104,7 @@ describe("useMathSheet()", () => {
                 act(() => result.current.changeMinimum(changedValue));
 
                 // Assert
-                expect(result.all[1]).toBe(result.all[2]);
+                expect(result.all[1]).toStrictEqual(result.all[2]);
             });
         },
     );
@@ -100,7 +120,7 @@ describe("useMathSheet()", () => {
                 act(() => result.current.changeMaximum(changedValue));
 
                 // Assert
-                expect(result.all[1]).toBe(result.all[2]);
+                expect(result.all[1]).toStrictEqual(result.all[2]);
             });
         },
     );
@@ -147,7 +167,7 @@ describe("useMathSheet()", () => {
             act(() => result.current.changeMaximum(changedValue));
 
             // Assert
-            expect(result.all[1]).toBe(result.all[2]);
+            expect(result.all[1]).toStrictEqual(result.all[2]);
         });
     });
 
@@ -161,7 +181,7 @@ describe("useMathSheet()", () => {
             act(() => result.current.changeMaximum(changedValue));
 
             // Assert
-            expect(result.all[1]).toBe(result.all[2]);
+            expect(result.all[1]).toStrictEqual(result.all[2]);
         });
     });
 
@@ -175,7 +195,34 @@ describe("useMathSheet()", () => {
             act(() => result.current.changeMaximum(changedValue));
 
             // Assert
-            expect(result.all[1]).toBe(result.all[2]);
+            expect(result.all[1]).toStrictEqual(result.all[2]);
+        });
+    });
+
+    describe("when symbol value is changed", () => {
+        it("returns new results", () => {
+            //Arrange
+            const { result } = renderHook(() => useMathSheet());
+            const changedValue = MathSymbol.Addition;
+
+            // Act
+            act(() => result.current.changeSymbol(changedValue));
+
+            // Assert
+            expect(result.all[1]).not.toEqual(result.all[2]);
+        });
+    });
+
+    describe("when symbol value is not valid", () => {
+        it("returns results unchanged", () => {
+            //Arrange
+            const { result } = renderHook(() => useMathSheet());
+
+            // Act
+            act(() => result.current.changeSymbol("a"));
+
+            // Assert
+            expect(result.all[1]).toStrictEqual(result.all[2]);
         });
     });
 });

@@ -1,5 +1,5 @@
 import { MathSymbol } from "enums/math-symbol";
-import { useCallback, useReducer } from "react";
+import { useCallback, useEffect, useReducer } from "react";
 import { NumberGenerationUtils } from "utils/number-generation-utils";
 
 interface MathSheetHookOptions {
@@ -35,7 +35,8 @@ type MathSheetHookAction =
     | { type: "minChange"; min: number }
     | { type: "maxChange"; max: number }
     | { type: "symbolChange"; value: string | null | undefined }
-    | { type: "randomize" };
+    | { type: "randomize" }
+    | { type: "updateTotalCount"; totalCount: number };
 
 const buildRandomFactFunc =
     (count: number) =>
@@ -138,6 +139,16 @@ const appReducer = (
                 mathProblems: state.generateMathProblems(state.min, state.max, value),
             };
         }
+        case "updateTotalCount": {
+            const { totalCount } = action;
+            const generateMathProblems = buildRandomFactFunc(totalCount);
+
+            return {
+                ...state,
+                generateMathProblems,
+                mathProblems: generateMathProblems(state.min, state.max, state.symbol),
+            };
+        }
     }
 };
 
@@ -176,6 +187,10 @@ export default function useMathSheet(
     const changeSymbol = useCallback((value?: string | null) => {
         dispatch({ type: "symbolChange", value });
     }, []);
+
+    useEffect(() => {
+        dispatch({ type: "updateTotalCount", totalCount });
+    }, [totalCount]);
 
     return {
         changeMaximum,

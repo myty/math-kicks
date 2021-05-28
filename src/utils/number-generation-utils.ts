@@ -10,11 +10,51 @@ interface MathGeneratorOptions {
 type MathProblemGenerator = (options: MathGeneratorOptions) => Array<MathProblem>;
 
 const generateAdditionNumbers: MathProblemGenerator = ({ max, min, count }) => {
-    return [];
+    const mathFacts: Array<MathProblem> = [];
+    const getNextRandomNumber = () => min + Math.round(Math.random() * (max - min));
+
+    for (let index = 0; index < count; index++) {
+        const prevMathProblem = index == 0 ? undefined : mathFacts[index - 1];
+        let mathProblem: MathProblem;
+
+        do {
+            const num1 = getNextRandomNumber();
+            const num2 = getNextRandomNumber();
+
+            mathProblem = num1 > num2 ? { num1, num2 } : { num1: num2, num2: num1 };
+        } while (
+            prevMathProblem?.num1 === mathProblem.num1 &&
+            prevMathProblem.num2 === mathProblem.num2
+        );
+
+        mathFacts[index] = mathProblem;
+    }
+
+    return mathFacts;
 };
 
 const generateSubtractionNumbers: MathProblemGenerator = ({ max, min, count }) => {
-    return [];
+    const mathFacts: Array<MathProblem> = new Array(count);
+    const getNextRandomNumber = () => min + Math.round(Math.random() * (max - min));
+
+    for (let index = 0; index < count; index++) {
+        const prevMathProblem = index == 0 ? undefined : mathFacts[index - 1];
+        let mathProblem: MathProblem;
+
+        do {
+            const num1 = getNextRandomNumber();
+            const num2 = getNextRandomNumber();
+
+            mathProblem = num1 > num2 ? { num1, num2 } : { num1: num2, num2: num1 };
+        } while (
+            prevMathProblem?.num1 === mathProblem.num1 &&
+            prevMathProblem.num2 === mathProblem.num2
+        );
+
+        mathFacts[index] = mathProblem;
+    }
+
+    return mathFacts;
 };
 
 const generateMultiplicationNumbers: MathProblemGenerator = ({ max, min, count }) => {

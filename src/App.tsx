@@ -1,5 +1,6 @@
+/* eslint-disable jsx-a11y/no-onchange */
 import useMathSheet from "hooks/use-math-sheet";
-import React, { ReactEventHandler } from "react";
+import React from "react";
 import Input from "components/input/input";
 import MathFactList from "components/math-fact-list/math-fact-list";
 import MathFact from "components/math-fact/math-fact";
@@ -19,7 +20,7 @@ const App: React.FC = () => {
         totalCount: 80,
     });
 
-    const handleSymbolChange: ReactEventHandler<HTMLSelectElement> = (evt) => {
+    const handleSymbolChange: React.ChangeEventHandler<HTMLSelectElement> = (evt) => {
         changeSymbol(evt.currentTarget.value);
     };
 
@@ -31,8 +32,8 @@ const App: React.FC = () => {
                 <label>
                     Symbol
                     <select
-                        className="p-1 pr-8 mx-1 border-gray-300 rounded border-1"
-                        onSelect={handleSymbolChange}>
+                        onChange={handleSymbolChange}
+                        className="p-1 pr-8 mx-1 border-gray-300 rounded border-1">
                         <option
                             selected={symbol === MathSymbol.Addition}
                             value={MathSymbol.Addition}>
@@ -82,7 +83,12 @@ const App: React.FC = () => {
 
             <MathFactList>
                 {mathProblems.map((mf, i) => (
-                    <MathFact key={i} number1={mf.num1} number2={mf.num2} />
+                    <MathFact
+                        key={i}
+                        number1={mf.num1}
+                        number2={mf.num2}
+                        symbol={symbol}
+                    />
                 ))}
             </MathFactList>
         </div>
