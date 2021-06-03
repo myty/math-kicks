@@ -1,9 +1,9 @@
 /* eslint-disable jsx-a11y/no-onchange */
 import useMathSheet from "hooks/use-math-sheet";
-import React from "react";
+import React, { useState } from "react";
 import Input from "components/input/input";
-import MathFactList from "components/math-fact-list/math-fact-list";
-import MathFact from "components/math-fact/math-fact";
+import MathProblemList from "components/math-probelm-list/math-problem-list";
+import MathProblem from "components/math-problem/math-problem";
 import { MathSymbol } from "enums/math-symbol";
 
 const App: React.FC = () => {
@@ -20,8 +20,14 @@ const App: React.FC = () => {
         totalCount: 80,
     });
 
+    const [showAnswers, setShowAnswers] = useState(false);
+
     const handleSymbolChange: React.ChangeEventHandler<HTMLSelectElement> = (evt) => {
         changeSymbol(evt.currentTarget.value);
+    };
+
+    const handleShowAnswers: React.ChangeEventHandler<HTMLInputElement> = (evt) => {
+        setShowAnswers(evt.currentTarget.checked);
     };
 
     return (
@@ -74,6 +80,15 @@ const App: React.FC = () => {
                     value={max}
                 />
 
+                <label>
+                    <span>Show Answers:</span>
+                    <input
+                        type="checkbox"
+                        checked={showAnswers}
+                        onChange={handleShowAnswers}
+                    />
+                </label>
+
                 <button
                     className="px-2 py-1 mx-2 text-white bg-blue-500 rounded-sm"
                     onClick={generate}>
@@ -81,16 +96,17 @@ const App: React.FC = () => {
                 </button>
             </div>
 
-            <MathFactList>
+            <MathProblemList>
                 {mathProblems.map((mf, i) => (
-                    <MathFact
+                    <MathProblem
                         key={i}
                         number1={mf.num1}
                         number2={mf.num2}
+                        showAnswer={showAnswers}
                         symbol={symbol}
                     />
                 ))}
-            </MathFactList>
+            </MathProblemList>
         </div>
     );
 };
