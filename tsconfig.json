@@ -14,12 +14,22 @@
         "noEmit": true,
         "noFallthroughCasesInSwitch": true,
         "noUnusedLocals": true,
+        "paths": {
+            "ramda": ["@types/ramda/templates"]
+        },
         "resolveJsonModule": true,
         "skipLibCheck": true,
         "strict": true,
         "strictNullChecks": true,
         "target": "ESNext",
-        "types": ["vite/client", "jest", "node"]
+        "types": [
+            "vite/client",
+            "jest",
+            "@testing-library/jest-dom",
+            "jest-chain",
+            "jest-extended",
+            "node"
+        ]
     },
     "include": ["./src"],
     "exclude": ["node_modules"]
