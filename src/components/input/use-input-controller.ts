@@ -7,7 +7,7 @@ type InputType =
 export type InputProps = InputType & {
     className?: string;
     id: string;
-    label: string;
+    label?: string;
     onChange: (value: string) => void;
 };
 
@@ -19,7 +19,7 @@ interface InputControllerHook {
     changeInputValue: (evt: ChangeEvent<HTMLInputElement>) => void;
     className?: string;
     id: string;
-    label: string;
+    label?: string;
     additionalProps?: { max?: number; min?: number };
     type: "number" | "text";
     value?: string | number;

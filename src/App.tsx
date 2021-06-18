@@ -1,10 +1,14 @@
-/* eslint-disable jsx-a11y/no-onchange */
+/* eslint-disable jsx-a11y/label-has-associated-control */
+
 import useMathSheet from "hooks/use-math-sheet";
 import React, { useState } from "react";
 import Input from "components/input/input";
 import MathProblemList from "components/math-probelm-list/math-problem-list";
 import MathProblem from "components/math-problem/math-problem";
 import { MathSymbol } from "enums/math-symbol";
+import Select from "components/select/select";
+
+type SymbolOption = { text: string; value: MathSymbol };
 
 const App: React.FC = () => {
     const {
@@ -22,41 +26,29 @@ const App: React.FC = () => {
 
     const [showAnswers, setShowAnswers] = useState(false);
 
-    const handleSymbolChange: React.ChangeEventHandler<HTMLSelectElement> = (evt) => {
-        changeSymbol(evt.currentTarget.value);
-    };
-
     const handleShowAnswers: React.ChangeEventHandler<HTMLInputElement> = (evt) => {
         setShowAnswers(evt.currentTarget.checked);
     };
+
+    const symbolOptions: Array<SymbolOption> = [
+        { text: "Addition", value: MathSymbol.Addition },
+        { text: "Subtraction", value: MathSymbol.Subtraction },
+        { text: "Multiplication", value: MathSymbol.Multiplication },
+    ];
 
     return (
         <div>
             <h1 className="text-lg font-semibold text-center">Math Facts</h1>
 
             <div className="m-3 text-center">
-                <label>
-                    Symbol
-                    <select
-                        onChange={handleSymbolChange}
-                        className="p-1 pr-8 mx-1 border-gray-300 rounded border-1">
-                        <option
-                            selected={symbol === MathSymbol.Addition}
-                            value={MathSymbol.Addition}>
-                            Addition
-                        </option>
-                        <option
-                            selected={symbol === MathSymbol.Subtraction}
-                            value={MathSymbol.Subtraction}>
-                            Subtraction
-                        </option>
-                        <option
-                            selected={symbol === MathSymbol.Multiplication}
-                            value={MathSymbol.Multiplication}>
-                            Multiplication
-                        </option>
-                    </select>
-                </label>
+                <Select
+                    current={symbolOptions.find((opt) => opt.value === symbol)}
+                    label="Symbol"
+                    options={symbolOptions}
+                    onChange={(option) => changeSymbol(option.value)}
+                    textProp="text"
+                    valueProp="value"
+                />
 
                 <Input
                     className="mr-4"
