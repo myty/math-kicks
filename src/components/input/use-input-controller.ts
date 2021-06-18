@@ -6,7 +6,6 @@ type InputType =
 
 export type InputProps = InputType & {
     className?: string;
-    id: string;
     label?: string;
     onChange: (value: string) => void;
 };
@@ -18,7 +17,6 @@ interface InputControllerOptions {
 interface InputControllerHook {
     changeInputValue: (evt: ChangeEvent<HTMLInputElement>) => void;
     className?: string;
-    id: string;
     label?: string;
     additionalProps?: { max?: number; min?: number };
     type: "number" | "text";
@@ -30,7 +28,6 @@ export default function useInputController(
 ): InputControllerHook {
     const {
         className,
-        id,
         label,
         onChange,
         type,
@@ -58,7 +55,6 @@ export default function useInputController(
         additionalProps,
         changeInputValue,
         className,
-        id,
         label,
         type,
         value,

@@ -52,7 +52,6 @@ const App: React.FC = () => {
 
                 <Input
                     className="mr-4"
-                    id="min"
                     label="Min"
                     onChange={changeMinimum}
                     type="number"
@@ -63,7 +62,6 @@ const App: React.FC = () => {
 
                 <Input
                     className="mr-4"
-                    id="max"
                     label="Max"
                     onChange={changeMaximum}
                     type="number"

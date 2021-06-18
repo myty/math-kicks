@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from "uuid";
 
 const Input: React.FC<InputProps> = (props) => {
     const elementId = useRef<string>(uuidv4());
-    const { additionalProps, changeInputValue, className, id, label, type, value } =
+    const { additionalProps, changeInputValue, className, label, type, value } =
         useInputController({
             props,
         });
